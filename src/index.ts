@@ -1,3 +1,4 @@
+import { registerBrowseRoutes } from './pages/browse.js';
 import { applyCompactTools } from './core/compact/server.js';
 import { COMPACT_CATALOG, PUBLIC_TOOL_NAMES } from './core/compact/catalog.js';
 import { apiResultHtml } from './pages/apiResult.js';
@@ -157,7 +158,7 @@ export function buildRootInfo() {
     description: 'Multi-Service MCP Server for Cloudflare Workers',
     endpoints: {
       mcp: '/ 또는 /mcp (POST) - MCP 프로토콜 엔드포인트',
-      quickStart: '/llms.txt (GET) - 설치 없는 첫 조회 안내',
+      quickStart: '/browse (GET) - 설치 없는 HTML 웹 조회와 /llms.txt 안내',
       health: '/health (GET) - 헬스 체크',
       healthChecks: '/api/health/checks (GET) - 서비스별 상세 헬스 체크',
       openapi: '/openapi.json (GET) - OpenAI Actions용 축약 OpenAPI',
@@ -166,8 +167,8 @@ export function buildRootInfo() {
       compareProducts: '/api/compare/products (GET) - 키 없는 통합 상품 가격 후보 비교',
       opinetAverage: '/api/opinet/average (GET) - 오피넷 전국 평균 유가',
       opinetLowest: '/api/opinet/lowest (GET) - 오피넷 최저가 주유소',
-      japanProducts: '/api/daiso-jp/products?q=...&format=html (GET) - 일본 다이소 상품',
-      japanStores: '/api/daiso-jp/stores?keyword=...&format=html (GET) - 일본 다이소 매장 (재고 미지원)',
+      japanProducts: '/browse/daiso-jp/products/검색어 (GET) - 일본 다이소 상품',
+      japanStores: '/browse/daiso-jp/stores/지역 (GET) - 일본 다이소 매장 (재고 미지원)',
       developerRequests: '/api/feedback/requests (POST/GET) - 개발자 요청 제출',
     },
     services,
@@ -362,6 +363,7 @@ registerHealthRoutes(app);
 registerRouteHealthRoutes(app);
 registerRateLimitStatsRoutes(app);
 registerServiceRoutes(app);
+registerBrowseRoutes(app);
 
 // 설치 없는 첫 조회 안내
 app.get('/guide/:version', (c) => createVersionedGuideResponse(new URL(c.req.url).origin, c.req.param('version')));

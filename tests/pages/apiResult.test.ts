@@ -40,7 +40,7 @@ describe('GET HTML 결과', () => {
     expect(body).toContain('조회 성공'); expect(body).toContain('1000');
     expect(body).toContain('&lt;script&gt;alert(1)&lt;/script&gt;');
     expect(body).not.toContain('<script');
-    expect(body).toContain('/api/daiso/products/123%26%22?format=html');
+    expect(body).toContain('/browse/daiso/product/123%26%22');
     expect(body).toContain('q=%22%3C&amp;pageSize=3');
     expect(body).toContain('null'); expect(body).toContain('false'); expect(body).toContain('빈 목록');
     expect(body).toContain('total');
@@ -67,8 +67,23 @@ describe('GET HTML 결과', () => {
   });
   it('셸 없는 에이전트에게 HTML GET을 안내하며 txt charset을 명시한다', () => {
     const assets = buildDiscoveryAssets({ services: [], tools: [] });
-    expect(assets['discovery.html']).toContain('pageSize=3&amp;format=html');
-    expect(assets['llms.txt']).toContain('pageSize=3&format=html');
+    expect(assets['discovery.html']).toContain('/pageSize/3');
+    expect(assets['llms.txt']).toContain('/pageSize/3');
     expect(assets['_headers']).toContain('/llms.txt\n  Content-Type: text/plain; charset=utf-8');
   });
+});
+
+it('후속 상세·재고·페이지 링크는 실제 식별자와 필터를 보존하는 browse 경로다', async () => {
+  const html = await (await fixture().request('/api/daiso/products?q=핫식스&page=1&pageSize=1&format=html')).text();
+  expect(html).toContain('href="/browse/daiso/product/123%26%22"');
+  expect(html).toContain('href="/browse/daiso/inventory/123%26%22"');
+  expect(html).toContain('/browse/daiso/products/');
+  expect(html).not.toMatch(/href="\/api\//);
+});
+it('구형 HTML 상세 주소의 잘못된 인코딩이 원래 400 응답을 500으로 바꾸지 않는다', async () => {
+  const a = new Hono(); a.use('/api/*', apiResultHtml);
+  a.get('/api/daiso/products/:id', c => c.json({ success: false, error: { code: 'INVALID_PARAMS', message: '잘못된 상품 ID' } }, 400));
+  const res = await a.request('/api/daiso/products/%ZZ?format=html');
+  expect(res.status).toBe(400); expect(res.headers.get('Content-Type')).toContain('text/html');
+  expect(await res.text()).toContain('INVALID_PARAMS');
 });
