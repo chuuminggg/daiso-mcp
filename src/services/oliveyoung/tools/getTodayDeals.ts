@@ -27,7 +27,7 @@ async function getTodayDeals(
     truncated: result.truncated,
     brandDeals: result.brandDeals,
     todayDeals: result.todayDeals,
-    note: '가격과 할인율은 조회 시점의 오특 화면 기준입니다. priceFrom=true는 옵션별 최저가입니다. 매장 재고는 check_inventory(service=oliveyoung)에 상품명을 keyword로 조회하세요.',
+    note: '가격과 할인율은 조회 시점의 오특 화면 기준입니다. priceFrom=true는 옵션별 최저가, soldOut=true는 일시품절입니다. 매장 재고는 check_inventory(service=oliveyoung)에 상품명을 keyword로 조회하세요.',
   };
   return {
     content: [{ type: 'text', text: JSON.stringify(body, null, 2) }],
@@ -47,6 +47,7 @@ const dealSchema = z.object({
   discountRate: z.number().nullable(),
   flags: z.array(z.string()),
   todayDelivery: z.boolean(),
+  soldOut: z.boolean(),
   imageUrl: z.string(),
   productUrl: z.string(),
 });

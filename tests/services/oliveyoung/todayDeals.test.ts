@@ -11,6 +11,8 @@ const fixture = (name: string) =>
 const page = fixture('today-deals-page.html');
 const list1 = fixture('today-deals-list-1.html');
 const list3 = fixture('today-deals-list-3.html');
+// 2026-10-27 화면에 일시품절로 표시된 실제 카드
+const soldOutCard = fixture('today-deals-list-soldout.html');
 // 2026-10-26 10:00 KST
 const now = new Date('2026-10-26T01:00:00Z');
 const card = (goodsNo: string, rank: number, extra = '') =>
@@ -34,6 +36,7 @@ describe('오특 HTML 파싱', () => {
       discountRate: 22,
       flags: ['세일', '쿠폰', '증정'],
       todayDelivery: true,
+      soldOut: false,
       imageUrl: expect.stringContaining('A00000017142291ko.jpg'),
       productUrl:
         'https://www.oliveyoung.co.kr/store/goods/getGoodsDetail.do?goodsNo=A000000171422',
@@ -52,6 +55,22 @@ describe('오특 HTML 파싱', () => {
       flags: ['쿠폰'],
     });
     expect(parseOliveyoungTodayDeals(list1)[3].flags).toEqual(['1+1', '쿠폰', '증정']);
+  });
+  it('일시품절 표시를 다른 값과 함께 읽는다', () => {
+    expect(parseOliveyoungTodayDeals(soldOutCard)).toEqual([
+      expect.objectContaining({
+        rank: 27,
+        goodsNo: 'A000000263126',
+        name: '[온라인 단독]올더베러 엑스트라버진 올리브오일 캡슐(30일분 x 4개입)',
+        price: 49900,
+        originalPrice: 79900,
+        discountRate: 37,
+        todayDelivery: true,
+        soldOut: true,
+      }),
+    ]);
+    const others = [...parseOliveyoungTodayDeals(page, '스페셜'), ...parseOliveyoungTodayDeals(list1)];
+    expect(others.some((d) => d.soldOut)).toBe(false);
   });
   it('정가와 할인율이 없는 카드와 HTML 문자 참조를 처리한다', () => {
     const [deal] = parseOliveyoungTodayDeals(

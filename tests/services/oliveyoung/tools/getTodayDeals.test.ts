@@ -25,6 +25,7 @@ const deal = {
   discountRate: 22,
   flags: ['세일'],
   todayDelivery: true,
+  soldOut: false,
   imageUrl: 'https://image.oliveyoung.co.kr/a.jpg',
   productUrl: 'https://www.oliveyoung.co.kr/store/goods/getGoodsDetail.do?goodsNo=A000000171422',
 };

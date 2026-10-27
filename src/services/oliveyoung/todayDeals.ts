@@ -25,6 +25,8 @@ export interface OliveyoungTodayDeal {
   discountRate: number | null;
   flags: string[];
   todayDelivery: boolean;
+  /** 화면에 "일시품절"로 표시된 상품입니다. */
+  soldOut: boolean;
   imageUrl: string;
   productUrl: string;
 }
@@ -116,6 +118,7 @@ export function parseOliveyoungTodayDeals(html: string, section?: string): Olive
       discountRate: rate === undefined ? null : Number(rate),
       flags: [...card.matchAll(/class="flag [^"]*">([\s\S]*?)<\/span>/g)].map((m) => text(m[1])),
       todayDelivery: priceBox.includes('class="oneday"'),
+      soldOut: card.includes('class="status_flag soldout"'),
       imageUrl: card.match(/<img src="([^"]+)"/)?.[1] ?? '',
       productUrl: `${OLIVEYOUNG_API.BASE_URL}/store/goods/getGoodsDetail.do?goodsNo=${goodsNo}`,
     });

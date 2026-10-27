@@ -298,7 +298,7 @@ Zyte API 기반으로 올리브영 상품 재고를 조회하고 주변 매장 �
 | :---------- | :--: | :------------------------------------------------------------------------------- |
 | `timeoutMs` |      | 페이지 여러 개를 합친 전체 제한 시간(ms, 기본값: 무료 릴레이 60000 / 직접 15000) |
 
-각 상품은 `rank`, `goodsNo`, `name`, `brand`, `category`, `price`, `priceFrom`, `originalPrice`, `discountRate`, `flags`, `todayDelivery`, `imageUrl`, `productUrl`을 반환합니다. `priceFrom=true`는 화면에 "원~"으로 표시되는 옵션별 최저가입니다. 실시간 매장 재고가 아니므로 재고는 상품명으로 `check_inventory`(service=oliveyoung)를 조회합니다. 원본 차단·형식 변경은 빈 목록이 아니라 오류로 반환합니다. 화면의 coming soon(다음 오특 예고)은 반환하지 않습니다. 원본 분석은 [오특 네트워크 분석](./oliveyoung-today-deals-analysis.md)에 있습니다.
+각 상품은 `rank`, `goodsNo`, `name`, `brand`, `category`, `price`, `priceFrom`, `originalPrice`, `discountRate`, `flags`, `todayDelivery`, `soldOut`, `imageUrl`, `productUrl`을 반환합니다. `priceFrom=true`는 화면에 "원~"으로 표시되는 옵션별 최저가이고, `soldOut=true`는 화면에 "일시품절"로 표시된 상품입니다. 실시간 매장 재고가 아니므로 재고는 상품명으로 `check_inventory`(service=oliveyoung)를 조회합니다. 원본 차단·형식 변경은 빈 목록이 아니라 오류로 반환합니다. 화면의 coming soon(다음 오특 예고)은 반환하지 않습니다. 원본 분석은 [오특 네트워크 분석](./oliveyoung-today-deals-analysis.md)에 있습니다.
 
 <br>
 
